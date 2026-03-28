@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>优性选24e - 精子性别分离试剂 | 科技繁育解决方案</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        body {
+            background: #F0F4FA;
+            color: #111827;
+            overflow-x: hidden;
+        }
+        :root {
+            --tech-blue: #0A66FF;
+            --bio-green: #14B8A6;
+            --dark-deep: #0A1929;
+        }
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1100;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(10,102,255,0.25);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+        }
+        .nav-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0.9rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: var(--tech-blue);
+        }
+        .logo span {
+            color: var(--bio-green);
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 600;
+            color: #1F2A48;
+            transition: 0.2s;
+            font-size: 1rem;
+            position: relative;
+            cursor: pointer;
+        }
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0;
+            height: 2.5px;
+            background: linear-gradient(90deg, var(--tech-blue), var(--bio-green));
+            transition: 0.25s;
+        }
+        .nav-links a:hover:after, .nav-links a.active:after {
+            width: 100%;
+        }
+        .nav-links a.active {
+            color: var(--tech-blue);
+        }
+        .page {
+            display: none;
+            animation: fadeUp 0.4s ease-out;
+        }
+        .active-page {
+            display: block;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .card-modern {
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+        .btn-primary {
+            background: linear-gradient(100deg, #0A66FF, #2C7CFF);
+            border: none;
+            padding: 12px 32px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(10,102,255,0.3);
+            text-decoration: none;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px -10px rgba(10,102,255,0.5);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #0A66FF;
+            color: #0A66FF;
+            padding: 10px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .section-title h2 {
+            font-size: 2.3rem;
+            color: var(--tech-blue);
+        }
+        .badge-tech {
+            background: rgba(10,102,255,0.1);
+            padding: 4px 12px;
+            border-radius: 60px;
+            font-size: 0.8rem;
+            color: #0A66FF;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .chart-box {
+            height: 360px;
+            width: 100%;
+        }
+        .hero-image {
+            width: 100%;
+            max-width: 450px;
+            border-radius: 28px;
+            box-shadow: 0 25px 40px -12px rgba(0,0,0,0.2);
+        }
+        footer {
+            background: #0A1929;
+            color: #9CA3AF;
+            padding: 3rem 1rem 2rem;
+            margin-top: 4rem;
+            text-align: center;
+        }
+        input, select, textarea {
+            font-family: inherit;
+        }
+
+        /* ========= 关键修改：统一步骤卡片样式 ========= */
+        .step-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+        }
+        .step-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        /* 统一图片尺寸和位置 */
+        .step-img-wrapper {
+            width: 100%;
+            height: 220px; /* 所有卡片图片高度一致 */
+            overflow: hidden;
+        }
+        .step-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 居中裁剪，不变形 */
+            display: block;
+        }
+        /* 统一文字区域样式 */
+        .step-text-wrapper {
+            padding: 1.5rem;
+            text-align: center;
+            flex: 1; /* 自动占满剩余高度，保证卡片等高 */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .step-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #0A66FF;
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+        .step-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 0.8rem;
+        }
+        .step-desc {
+            font-size: 1rem;
+            color: #333;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="navbar">
+        <div class="nav-container">
+            <div class="logo">优性选<span>24e</span></div>
+            <div class="nav-links">
+                <a data-page="home" class="active">首页</a>
+                <a data-page="product">产品详情</a>
+                <a data-page="instruction">使用说明</a>
+                <a data-page="dashboard">数据看板</a>
+                <a data-page="buy">购买</a>
+                <a data-page="contact">联系我们</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 首页 -->
+    <div id="page-home" class="page active-page">
+        <div class="container" style="padding-top: 2rem;">
+            <div style="display: flex; align-items: center; gap: 3rem; flex-wrap: wrap;">
+                <div style="flex:1">
+                    <span class="badge-tech"><i class="fas fa-flask"></i> 国家发明专利技术</span>
+                    <h1 style="font-size: 3rem; margin: 1rem 0 0.5rem;">精子性别分离<br>进入<span style="color:#0A66FF;"> 干粉精准时代</span></h1>
+                    <p style="font-size: 1.2rem; color: #4B5563; margin: 1rem 0 1.8rem;">Y精子纯度≥84% · X精子纯度≥82% · 活力保护系统 · 三管干粉一步分选</p>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <a data-page="buy" class="btn-primary" style="cursor:pointer;"><i class="fas fa-shopping-cart"></i> 立即咨询</a>
+                        <a data-page="dashboard" class="btn-outline" style="cursor:pointer;">📊 技术数据底蕴</a>
+                    </div>
+                    <div style="margin-top: 2rem; display: flex; gap: 2rem; flex-wrap: wrap;">
+                        <div><i class="fas fa-chart-line" style="color:#0A66FF;"></i> 3年销量预估增长400%</div>
+                        <div><i class="fas fa-dollar-sign" style="color:#14B8A6;"></i> 单次分选成本低至4.98元</div>
+                        <div><i class="fas fa-trophy"></i> 内蒙古大学专利成果转化</div>
+                    </div>
+                </div>
+                <div style="flex:1; text-align: center;">
+                    <img src="product.png" alt="优性选24e精子性别分离试剂" class="hero-image">
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap:1.5rem; margin: 3rem 0;">
+                <div class="card-modern" style="padding:1.5rem; text-align:center;"><i class="fas fa-chart-simple" style="font-size:2rem; color:#0A66FF;"></i><h3>纯度≥84%</h3><p>Y精子分离纯度</p></div>
+                <div class="card-modern" style="padding:1.5rem; text-align:center;"><i class="fas fa-seedling" style="font-size:2rem; color:#14B8A6;"></i><h3>雄性胚胎率77%</h3><p>IVF性别控制验证</p></div>
+                <div class="card-modern" style="padding:1.5rem; text-align:center;"><i class="fas fa-charging-station" style="font-size:2rem;"></i><h3>活力保护技术</h3><p>质膜完整率≥79%</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 产品详情（修改了背景和图片路径） -->
+    <div id="page-product" class="page">
+        <div style="background: url('muchang.png') center center / cover no-repeat; padding: 4rem 0; position: relative;">
+            <!-- 背景遮罩，保证文字清晰可读 -->
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7);"></div>
+            <div class="container" style="position: relative; z-index: 1;">
+                <div class="section-title"><h2>三管干粉 · 科技内核</h2><p>基于内蒙古大学专利，TLR7/8通路精准调控精子运动</p></div>
+                <div style="display: flex; justify-content: center; margin-bottom: 2.5rem;">
+                    <div class="card-modern" style="padding: 1.5rem; text-align: center;">
+                        <img src="product.png" alt="优性选24e精子性别分离试剂套装" style="max-width: 300px; border-radius: 16px;">
+                        <div style="margin-top:1rem;">
+                            <i class="fas fa-certificate" style="color:#0A66FF; font-size: 1.8rem;"></i>
+                            <p style="margin-top: 8px;"><strong>专利号:</strong> ZL 2024 1 0592180.0 / ZL202410372648.5</p>
+                            <span class="badge-tech">🐂 牛/羊专用 </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container" style="padding: 2rem 0;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 2rem;">
+                <div class="card-modern" style="padding: 2rem;"><i class="fas fa-vial" style="font-size: 2rem; color:#0A66FF;"></i><h3 style="margin:1rem 0">分选核心-A管</h3><p>24e+HTF缓冲盐，终浓度0.27μM，精准抑制X精子活力，实现自然分层。</p><div class="badge-tech">纯度支撑: Y≥84%</div></div>
+                <div class="card-modern" style="padding: 2rem;"><i class="fas fa-heartbeat" style="font-size: 2rem; color:#14B8A6;"></i><h3 style="margin:1rem 0">活力保护-B管</h3><p>500μM肌酸+专属能量底物，分选全程维持精子活力，复苏后活力快速回升。</p><div class="badge-tech">顶体完整率≥72%</div></div>
+                <div class="card-modern" style="padding: 2rem;"><i class="fas fa-syringe" style="font-size: 2rem;"></i><h3 style="margin:1rem 0">洗脱复苏-C管</h3><p>无激动剂缓冲体系，洗脱后精子无残留，可直接用于AI/IVF。</p><div class="badge-tech">洗脱复苏专利ZL202410372648.5</div></div>
+            </div>
+            <div class="card-modern" style="margin-top: 2.5rem; padding: 1.8rem;">
+                <h3>📐 核心参数表</h3>
+                <table style="width:100%; border-collapse: collapse; margin-top:1rem;">
+                    <tr style="border-bottom:1px solid #e2e8f0;"><th style="text-align:left; padding:10px;">项目</th><th style="text-align:left;">指标</th></tr>
+                    <tr><td style="padding:8px;">适用范围</td><td>牛、羊新鲜精液 / 解冻后活力≥80%冻精</td></tr>
+                    <tr><td style="padding:8px;">分选纯度</td><td>Y精子84.07%±0.95% | X精子82.80%±1.31%</td></tr>
+                    <tr><td style="padding:8px;">IVF胚胎性别率</td><td>雄性胚胎77.0%±2.08% 雌性胚胎85.32%±1.45%</td></tr>
+                    <tr><td style="padding:8px;">规格/储存</td><td>50次/套，2–8℃冷藏，未开封18个月</td></tr>
+                    <tr><td style="padding:8px;">操作条件</td><td>37℃静置孵育60分钟</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 使用说明（已统一卡片/图片/文字样式） -->
+    <div id="page-instruction" class="page">
+        <div class="container" style="padding: 2rem 0;">
+            <div class="section-title"><h2>四步法 · 精准分离</h2><p>干粉体系现场即用，无需复杂设备</p></div>
+            <div class="step-container">
+                <!-- 步骤1 -->
+                <div class="card-modern step-card">
+                    <div class="step-img-wrapper">
+                        <img src="step1.png" alt="步骤1-配制工作液" class="step-img">
+                    </div>
+                    <div class="step-text-wrapper">
+                        <div class="step-number">1</div>
+                        <h3 class="step-title">配制工作液</h3>
+                        <p class="step-desc">A管+B管干粉加入无菌稀释液，充分溶解无颗粒。</p>
+                    </div>
+                </div>
+                <!-- 步骤2 -->
+                <div class="card-modern step-card">
+                    <div class="step-img-wrapper">
+                        <img src="step2.png" alt="步骤2-精液标准稀释" class="step-img">
+                    </div>
+                    <div class="step-text-wrapper">
+                        <div class="step-number">2</div>
+                        <h3 class="step-title">精液标准稀释</h3>
+                        <p class="step-desc">新鲜精液稀释至6×10⁷ sperm/mL，轻轻混匀。</p>
+                    </div>
+                </div>
+                <!-- 步骤3 -->
+                <div class="card-modern step-card">
+                    <div class="step-img-wrapper">
+                        <img src="step3.png" alt="步骤3-37℃静置孵育" class="step-img">
+                    </div>
+                    <div class="step-text-wrapper">
+                        <div class="step-number">3</div>
+                        <h3 class="step-title">37℃静置孵育</h3>
+                        <p class="step-desc">恒温静置60分钟，自然分层，上层Y精子富集，下层X精子富集。</p>
+                    </div>
+                </div>
+                <!-- 步骤4 -->
+                <div class="card-modern step-card">
+                    <div class="step-img-wrapper">
+                        <img src="step4.png" alt="步骤4-洗脱复苏" class="step-img">
+                    </div>
+                    <div class="step-text-wrapper">
+                        <div class="step-number">4</div>
+                        <h3 class="step-title">洗脱复苏</h3>
+                        <p class="step-desc">C管复溶液洗涤一次，无药物残留，活力复苏后直接用于输精。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-modern" style="margin-top: 2rem; background:#EFF9FF; padding:1.5rem; border-left: 5px solid #0A66FF;">
+                <i class="fas fa-exclamation-triangle"></i> <strong>注意事项</strong>：严格37℃/60min；复溶后工作液需当天用完；禁止人体使用；冻精解冻后活力需达标。
+            </div>
+        </div>
+    </div>
+
+    <!-- 数据看板 -->
+    <div id="page-dashboard" class="page">
+        <div class="container" style="padding: 2rem 0;">
+            <div class="section-title"><h2>📈 科技底蕴 · 商业价值</h2><p>基于真实成本结构与销量预测，展现产品可靠性与市场潜力</p></div>
+            <div class="card-modern" style="padding: 1.8rem; margin-bottom: 2rem;">
+                <h3><i class="fas fa-tag"></i> 透明定价体系</h3>
+                <table style="width:100%; border-collapse: collapse; margin: 1rem 0;">
+                    <thead style="background:#F0F7FF;"><tr><th style="padding:12px; text-align:left;">定价类型</th><th style="padding:12px; text-align:left;">单套价格（元）</th></tr></thead>
+                    <tbody>
+                        <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:10px;">终端直销价</td><td style="font-weight:700;">249</td></tr>
+                        <tr style="border-bottom:1px solid #e2e8f0;"><td style="padding:10px;">经销商供货价</td><td>¥200</td></tr>
+                        <tr><td style="padding:10px;">单次分选成本（自动计算）</td><td style="color:#14B8A6; font-weight:800;">¥4.98 <span style="font-size:0.8rem;">(按单套50次分选)</span></td></tr>
+                    </tbody>
+                </table>
+                <div class="badge-tech" style="display:inline-block;">基于高纯度技术，单次成本远低于流式细胞仪分选</div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px,1fr)); gap: 2rem;">
+                <div class="card-modern" style="padding: 1.2rem;">
+                    <h3 style="text-align:center;"><i class="fas fa-chart-pie"></i> 性别分离纯度优势</h3>
+                    <div id="pieChart" class="chart-box" style="height: 360px;"></div>
+                    <p style="text-align:center; font-size:0.9rem; margin-top: 8px;">Y精子纯度 ≥84% · X精子纯度 ≥82% (基于牛羊精液样本)</p>
+                </div>
+                <div class="card-modern" style="padding: 1.2rem;">
+                    <h3 style="text-align:center;"><i class="fas fa-chart-column"></i> 3年销量与营收预测</h3>
+                    <div id="barChart" class="chart-box" style="height: 360px;"></div>
+                    <p style="text-align:center; margin-top: 8px;">基于经销商供货价200元/套，年度营收持续攀升</p>
+                </div>
+            </div>
+            <div class="card-modern" style="margin-top: 2rem; padding:1.5rem;">
+                <h3>📆 三年销量预测 · 技术认可度递增</h3>
+                <table style="width:100%; border-collapse: collapse;">
+                    <thead><tr style="background:#EFF6FF;"><th>预测年份</th><th>年度销售总套数（套）</th><th>年度营业收入（万元）</th></tr></thead>
+                    <tbody>
+                        <tr><td style="padding:10px;">第1年</td><td>47套</td><td>11703 万元</td></tr>
+                        <tr><td style="padding:10px;">第2年</td><td>126套</td><td>31374 万元</td></tr>
+                        <tr><td style="padding:10px;">第3年</td><td>364套</td><td>90636 万元</td></tr>
+                    </tbody>
+                </table>
+                <p class="badge-tech" style="margin-top: 1rem;"><i class="fas fa-chart-line"></i> CAGR增长率达177.6% ，市场渗透率提升</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 购买页面 -->
+    <div id="page-buy" class="page">
+        <div class="container" style="padding: 2rem 0; max-width: 800px;">
+            <div class="card-modern" style="padding: 2rem;">
+                <h2 style="text-align:center;">优性选24e 标准套装</h2>
+                <p style="text-align:center; color:#0A66FF; font-weight:bold;">50次/套 (A/B/C三管干粉) · 牛羊通用</p>
+                <div style="text-align:center; margin:1rem 0;"><span style="font-size:2rem; font-weight:800;">249</span> <span style="text-decoration:line-through; color:#aaa;">¥380</span> 终端直销价</div>
+                <div style="background:#F0F7FF; border-radius: 20px; padding: 1rem; margin-bottom: 1.5rem;">
+                    <i class="fas fa-truck-fast"></i> 2-8℃冷链包邮 · 技术专员一对一指导 · 正规发票
+                </div>
+                <form id="orderForm">
+                    <div style="margin-bottom:1rem;"><label>联系人姓名</label><input type="text" id="buyerName" style="width:100%; padding:12px; border-radius: 28px; border:1px solid #ddd;" placeholder="姓名" required></div>
+                    <div style="margin-bottom:1rem;"><label>联系电话</label><input type="tel" id="buyerPhone" style="width:100%; padding:12px; border-radius: 28px; border:1px solid #ddd;" placeholder="手机号" required></div>
+                    <div style="margin-bottom:1rem;"><label>单位/养殖场</label><input type="text" id="company" style="width:100%; padding:12px; border-radius:28px; border:1px solid #ddd;" placeholder="单位名称"></div>
+                    <div style="margin-bottom:1rem;"><label>购买数量（套）</label><input type="number" id="quantity" value="1" min="1" style="width:100%; padding:12px; border-radius:28px; border:1px solid #ddd;"></div>
+                    <div style="margin-bottom:1.5rem;"><label>付款方式</label><select id="payMethod" style="width:100%; padding:12px; border-radius:28px;"><option>线上支付（微信/支付宝）</option><option>企业对公转账</option></select></div>
+                    <button type="submit" class="btn-primary" style="width:100%;">提交订单 · 专员对接</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 联系我们 -->
+    <div id="page-contact" class="page">
+        <div class="container" style="padding: 2rem 0;">
+            <div class="section-title"><h2>技术咨询 · 售后支持</h2><p>7x24小时为繁育场保驾护航</p></div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 2rem;">
+                <div class="card-modern" style="padding:1.8rem; text-align:center;"><i class="fas fa-phone-alt" style="font-size:2rem; color:#0A66FF;"></i><h3>热线</h3><p>400-000-8899<br>0911-1234567</p></div>
+                <div class="card-modern" style="padding:1.8rem; text-align:center;"><i class="fas fa-envelope"></i><h3>官方邮箱</h3><p>youxingxuan@163.com<br>jishu@youxingxuan.com</p></div>
+                <div class="card-modern" style="padding:1.8rem; text-align:center;"><i class="fab fa-weixin"></i><h3>优性选24e繁育技术</h3><p>公众号获取最新资料</p></div>
+            </div>
+            <form id="contactForm" class="card-modern" style="margin-top:2rem; padding:2rem;">
+                <h3>快速留言</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;"><input type="text" placeholder="姓名" id="conName" style="padding:12px; border-radius:28px; border:1px solid #ddd;"><input type="tel" placeholder="电话" id="conPhone" style="padding:12px; border-radius:28px;"></div>
+                <textarea rows="3" placeholder="咨询内容" id="conMsg" style="width:100%; margin:1rem 0; padding:12px; border-radius:20px;"></textarea>
+                <button type="submit" class="btn-primary">提交咨询</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>©2025 优性选24e 版权所有 | 专利支撑: ZL202410592180.0 / ZL202410372648.5 | 畜禽繁育专用试剂</p>
+        <p style="margin-top:8px;">本产品仅用于科研与生产用途，精准性别控制助力产业升级</p>
+    </footer>
+
+    <script>
+        const pagesMap = {
+            home: 'page-home',
+            product: 'page-product',
+            instruction: 'page-instruction',
+            dashboard: 'page-dashboard',
+            buy: 'page-buy',
+            contact: 'page-contact'
+        };
+        function showPage(pageId) {
+            Object.values(pagesMap).forEach(pid => {
+                const el = document.getElementById(pid);
+                if(el) el.classList.remove('active-page');
+            });
+            const target = document.getElementById(pageId);
+            if(target) target.classList.add('active-page');
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.classList.remove('active');
+                const pageKey = link.getAttribute('data-page');
+                if(pageKey && pagesMap[pageKey] === pageId) {
+                    link.classList.add('active');
+                }
+            });
+            if(pageId === 'page-dashboard') {
+                setTimeout(() => renderCharts(), 100);
+            }
+        }
+        function renderCharts() {
+            const pieDom = document.getElementById('pieChart');
+            const barDom = document.getElementById('barChart');
+            if(pieDom && barDom) {
+                const pieChart = echarts.init(pieDom);
+                pieChart.setOption({
+                    title: { text: '精子性别分离纯度', left: 'center', top: 5, textStyle: { fontSize: 14 } },
+                    tooltip: { trigger: 'item', formatter: '{b}: {d}%' },
+                    legend: { orient: 'vertical', left: 'left', data: ['Y精子 (雄性) ≥84%', 'X精子 (雌性) ≥82%'] },
+                    series: [{
+                        type: 'pie', radius: '55%', center: ['50%', '55%'],
+                        data: [
+                            { value: 84.07, name: 'Y精子 (雄性) ≥84%', itemStyle: { color: '#0A66FF' } },
+                            { value: 82.80, name: 'X精子 (雌性) ≥82%', itemStyle: { color: '#14B8A6' } }
+                        ],
+                        label: { show: true, formatter: '{b}\n{d}%', position: 'outside', fontWeight: 'bold' }
+                    }]
+                });
+                const barChart = echarts.init(barDom);
+                barChart.setOption({
+                    tooltip: { trigger: 'axis' },
+                    legend: { data: ['销售套数 (套)', '营业收入 (万元)'], left: 'center', top: 0 },
+                    grid: { top: '15%', left: '10%', right: '8%' },
+                    xAxis: { type: 'category', data: ['第1年', '第2年', '第3年'] },
+                    yAxis: [
+                        { type: 'value', name: '销量 (套)' },
+                        { type: 'value', name: '营收 (万元)' }
+                    ],
+                    series: [
+                        { name: '销售套数 (套)', type: 'bar', data: [47 , 126 , 364], itemStyle: { color: '#0A66FF', borderRadius: [8,8,0,0], label: { show: true, position: 'top', formatter: '{c} 套' } }, barWidth: '40%' },
+                        { name: '营业收入 (万元)', type: 'line', yAxisIndex: 1, data: [1.1703, 3.1374, 9.0636], lineStyle: { color: '#14B8A6', width: 4 }, symbol: 'circle', symbolSize: 10, itemStyle: { label: { show: true, position: 'top', formatter: '{c} 万' } } }
+                    ]
+                });
+            }
+        }
+        document.querySelectorAll('.nav-links a, a[data-page]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageKey = link.getAttribute('data-page');
+                if(pageKey && pagesMap[pageKey]) {
+                    showPage(pagesMap[pageKey]);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+        });
+        const orderForm = document.getElementById('orderForm');
+        if(orderForm) orderForm.addEventListener('submit', (e) => { e.preventDefault(); alert('订单已提交！专员24h内联系确认。'); orderForm.reset(); });
+        const contactForm = document.getElementById('contactForm');
+        if(contactForm) contactForm.addEventListener('submit', (e) => { e.preventDefault(); alert('咨询已收到，技术顾问将尽快回复。'); contactForm.reset(); });
+        window.addEventListener('resize', () => {
+            if(document.getElementById('page-dashboard').classList.contains('active-page')) renderCharts();
+        });
+    </script>
+</body>
+</html>
